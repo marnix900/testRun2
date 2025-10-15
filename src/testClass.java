@@ -3,68 +3,98 @@ import java.awt.*;
 import javax.swing.*;
 
 public class testClass {
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
 
-    private Cookie cookie;
+    private CookieCounter cookie;
 
-    public testClass(Cookie cookie) {
+    public testClass(CookieCounter cookie) {
         this.cookie = cookie;
+    }
+
+    public Point point() {
+        int x = (int)(Math.random()*101);
+        int y = (int)(Math.random()*101);
+        System.out.println(x + ' ' + y);
+        return new Point(100, 100);
     }
 
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("HelloWorldSwing");
+        JFrame frame = new JFrame("Cookie Clicker");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1062, 706);
+        frame.setLocation(100, 100);
 
-        //Add the ubiquitous "Hello World" label.
-        JLabel label = new JLabel("Hello World");
-        frame.getContentPane().add(label);
+        JLabel label = new JLabel("Cookie Clicker");
+        frame.getContentPane().add(label, BorderLayout.NORTH);
 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(500,400);
-        frame.setLocation(2000, 500);
+        ImagePanel panel = new ImagePanel("/images/blueSkyBackground.jpeg", Color.BLACK, 662, 706);
+        frame.add(panel, BorderLayout.WEST);
 
-        JPanel panel = new JPanel();
-        panel.setBorder(BorderFactory.createLineBorder(Color.black));
-        panel.setBackground(Color.red);
+        ImagePanel storePanel = new ImagePanel("/images/wood.jpg", Color.BLACK, 400, 706);
+        frame.add(storePanel, BorderLayout.EAST);
+        Upgrade cursorUpgrade = new Upgrade("/images/CursorUpgrade.png");
+        cursorUpgrade.setLocation(100, 100);
+        storePanel.add(cursorUpgrade);
 
-        frame.add(panel);
+        CookieCounter counter = new CookieCounter(0);
 
-        JButton button = new JButton("Cookie");
-        panel.add(button);
-        button.setBorder(BorderFactory.createLineBorder(Color.black));
-        button.setBackground(Color.blue);
+        // Create multiple cookies
+        Cookie cookie1 = new Cookie("/images/cookie.png", "Cookie1");
+        cookie1.setLocation(cookie1.random(), cookie1.random());
 
-        Cookie c = new Cookie(0);
-        button.addMouseListener(c.addCookie(c.getCookie()));
-        label.setText("Cookie count: " + c.getCookie());
-    }
+        Cookie cookie2 = new Cookie("/images/cookie.png", "Cookie2");
+        cookie2.setLocation(cookie2.random(), cookie2.random());
 
-    /*
-    public static void createWindow() {
-        JWindow window = new JWindow();
-        window.setSize(100,100);
-        window.setLocation(100, 100);
-        window.setVisible(true);
-    }
-    */
+        Cookie cookie3 = new Cookie("/images/cookie.png", "Cookie3");
+        cookie3.setLocation(cookie3.random(), cookie3.random());
 
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Cookie c = new Cookie(0);
-                testClass testClass = new testClass(c);
-                createAndShowGUI();
-                //createWindow();
+        panel.add(cookie1);
+        panel.add(cookie2);
+        panel.add(cookie3);
+
+        ActionListener upgradeListener = e -> {
+            Upgrade upgradeClicked = (Upgrade) e.getSource();
+            if ((counter.getCookie() >= 10) && (!cursorUpgrade.getUpgraded())) {
+                counter.setCookie(counter.getCookie() - 10);
+                counter.setIncrement(counter.getIncrement()*2);
+                label.setText("Cookie count: " + counter.getCookie());
+                System.out.println("Upgrade purchased!");
+                cursorUpgrade.setUpgraded(true);
+            } if (cursorUpgrade.getUpgraded()) {
+                System.out.println("Upgrade already purchased!");
+            } else {
+                System.out.println("Upgrade failed!");
             }
-        });
+        };
+
+        cursorUpgrade.addActionListener(upgradeListener);
+
+        // Shared listener logic
+        ActionListener clickAction = e -> {
+            Cookie clicked = (Cookie) e.getSource();
+            panel.remove(clicked);
+            panel.revalidate();
+            panel.repaint();
+            counter.addCookie();
+            label.setText("Cookie count: " + counter.getCookie());
+            panel.add(clicked);
+            clicked.setLocation(clicked.random(), clicked.random());
+        };
+
+        // Add listeners
+        for (Cookie cookie : new Cookie[]{cookie1, cookie2, cookie3}) {
+            cookie.addActionListener(clickAction);
+            cookie.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    cookie.shrink();
+                }
+            });
+        }
+
+        frame.setVisible(true);
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> createAndShowGUI());
     }
 }

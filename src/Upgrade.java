@@ -1,16 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Cookie extends JButton {
-    private String name;
+public class Upgrade extends JButton {
     private Image scaledImage;
+    private Boolean upgraded = false;
 
+    public Upgrade(String imagePath) {
 
-    public Cookie(String imagePath, String name) {
-        this.name = name;
-
-        ImageIcon cookieIcon = new ImageIcon(getClass().getResource(imagePath));
-        scaledImage = cookieIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        ImageIcon upgradeIcon = new ImageIcon(getClass().getResource(imagePath));
+        scaledImage = upgradeIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
         setIcon(new ImageIcon(scaledImage));
         setContentAreaFilled(false);
@@ -29,7 +27,11 @@ public class Cookie extends JButton {
         setIcon(new ImageIcon(scaledImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH)));
     }
 
-    public int random() {
-        return (int)(Math.random()*501);
+    public Boolean getUpgraded() {
+        return upgraded;
+    }
+
+    public void setUpgraded(Boolean upgraded) {
+        this.upgraded = upgraded;
     }
 }
