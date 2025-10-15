@@ -1,20 +1,16 @@
 import java.awt.event.*;
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class testClass {
 
     private CookieCounter cookie;
+    private static final int maxCookies = 3;
+    private static final int fallSpeed = 5;
 
     public testClass(CookieCounter cookie) {
         this.cookie = cookie;
-    }
-
-    public Point point() {
-        int x = (int)(Math.random()*101);
-        int y = (int)(Math.random()*101);
-        System.out.println(x + ' ' + y);
-        return new Point(100, 100);
     }
 
     private static void createAndShowGUI() {
@@ -29,6 +25,7 @@ public class testClass {
 
         ImagePanel panel = new ImagePanel("/images/blueSkyBackground.jpeg", Color.BLACK, 662, 706);
         frame.add(panel, BorderLayout.WEST);
+        panel.setLayout(null);
 
         ImagePanel storePanel = new ImagePanel("/images/wood.jpg", Color.BLACK, 400, 706);
         frame.add(storePanel, BorderLayout.EAST);
@@ -37,20 +34,6 @@ public class testClass {
         storePanel.add(cursorUpgrade);
 
         CookieCounter counter = new CookieCounter(0);
-
-        // Create multiple cookies
-        Cookie cookie1 = new Cookie("/images/cookie.png", "Cookie1");
-        cookie1.setLocation(cookie1.random(), cookie1.random());
-
-        Cookie cookie2 = new Cookie("/images/cookie.png", "Cookie2");
-        cookie2.setLocation(cookie2.random(), cookie2.random());
-
-        Cookie cookie3 = new Cookie("/images/cookie.png", "Cookie3");
-        cookie3.setLocation(cookie3.random(), cookie3.random());
-
-        panel.add(cookie1);
-        panel.add(cookie2);
-        panel.add(cookie3);
 
         ActionListener upgradeListener = e -> {
             Upgrade upgradeClicked = (Upgrade) e.getSource();
@@ -69,31 +52,74 @@ public class testClass {
 
         cursorUpgrade.addActionListener(upgradeListener);
 
-        // Shared listener logic
-        ActionListener clickAction = e -> {
-            Cookie clicked = (Cookie) e.getSource();
-            panel.remove(clicked);
-            panel.revalidate();
-            panel.repaint();
-            counter.addCookie();
-            label.setText("Cookie count: " + counter.getCookie());
-            panel.add(clicked);
-            clicked.setLocation(clicked.random(), clicked.random());
-        };
-
-        // Add listeners
-        for (Cookie cookie : new Cookie[]{cookie1, cookie2, cookie3}) {
-            cookie.addActionListener(clickAction);
-            cookie.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    cookie.shrink();
-                }
+        //initial cookies
+        ArrayList<Cookie> cookies = new ArrayList<>();
+        while (cookies.size() < maxCookies) {
+            Cookie cookie = new Cookie("/images/cookie.png", "Cookie1");
+            cookie.setLocation(cookie.random(), 0);
+            cookies.add(cookie);
+            panel.add(cookie);
+            cookie.addActionListener(e -> {
+                Cookie clicked = (Cookie) e.getSource();
+                panel.remove(clicked);
+                cookies.remove(clicked);
+                counter.addCookie();
+                label.setText("Cookie count: " + counter.getCookie());
+                panel.repaint();
+                spawnCookie(cookies, panel, counter, label); // ✅ recursive call
             });
         }
 
+        Timer fallTimer = new Timer(20, e -> {
+            ArrayList<Cookie> toRemove = new ArrayList<>();
+
+            for (Cookie cookie : new ArrayList<>(cookies)) {
+                Point p = cookie.getLocation();
+                p.y += fallSpeed;
+                cookie.setLocation(p);
+
+                if (p.y > panel.getHeight()) {
+                    toRemove.add(cookie);
+                }
+            }
+
+            for (Cookie c : toRemove) {
+                panel.remove(c);
+                cookies.remove(c);
+                spawnCookie(cookies, panel, counter, label);
+            }
+
+            panel.repaint();
+        });
+        fallTimer.start();
+
         frame.setVisible(true);
     }
+
+    private static void spawnCookie(
+            ArrayList<Cookie> cookies, JPanel panel, CookieCounter counter, JLabel label
+    ) {
+        if (cookies.size() < maxCookies) {
+            Cookie cookie = new Cookie("/images/cookie.png", "Cookie" + (cookies.size() + 1));
+            int startX = (int)(Math.random() * (panel.getWidth() - 150));
+            cookie.setLocation(startX, 0);
+            panel.add(cookie);
+            panel.repaint();
+
+            cookie.addActionListener(e -> {
+                Cookie clicked = (Cookie) e.getSource();
+                panel.remove(clicked);
+                cookies.remove(clicked);
+                counter.addCookie();
+                label.setText("Cookie count: " + counter.getCookie());
+                panel.repaint();
+                spawnCookie(cookies, panel, counter, label); // ✅ recursive call
+            });
+
+            cookies.add(cookie);
+        }
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> createAndShowGUI());
     }
