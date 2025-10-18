@@ -1,9 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Cookie extends JButton {
     private String name;
     private Image scaledImage;
+    private int X;
 
 
     public Cookie(String imagePath, String name) {
@@ -29,7 +31,15 @@ public class Cookie extends JButton {
         setIcon(new ImageIcon(scaledImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH)));
     }
 
-    public int random() {
-        return (int)(Math.random()*501);
+    public int random(ArrayList<Integer> spawningPoint) {
+        return (int)(Math.random()*spawningPoint.size()); //prevents out of bound error
+    }
+
+    public void setX(int x) {
+        this.X = x;
+    }
+
+    public int getX() {
+        return this.X;
     }
 }

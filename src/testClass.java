@@ -20,12 +20,20 @@ public class testClass {
         frame.setSize(1062, 706);
         frame.setLocation(100, 100);
 
-        JLabel label = new JLabel("Cookie Clicker");
-        frame.getContentPane().add(label, BorderLayout.NORTH);
-
         ImagePanel panel = new ImagePanel("/images/blueSkyBackground.jpeg", Color.BLACK, 662, 706);
         frame.add(panel, BorderLayout.WEST);
-        panel.setLayout(null);
+
+        Label label = new Label("Cookie count: 0", Color.GRAY);
+        label.setBounds(231, 20, 200, 60);
+        panel.add(label);
+
+        int spacing = 640 / 10;
+        ArrayList<Integer> spawningPoint = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            spawningPoint.add(i*spacing);
+        }
+
+        System.out.println("spawning point: " + spawningPoint);
 
         ImagePanel storePanel = new ImagePanel("/images/wood.jpg", Color.BLACK, 400, 706);
         frame.add(storePanel, BorderLayout.EAST);
@@ -56,7 +64,11 @@ public class testClass {
         ArrayList<Cookie> cookies = new ArrayList<>();
         while (cookies.size() < maxCookies) {
             Cookie cookie = new Cookie("/images/cookie.png", "Cookie1");
-            cookie.setLocation(cookie.random(), 0);
+            int randomNumber = cookie.random(spawningPoint);
+            int XCord = spawningPoint.get(randomNumber);
+            spawningPoint.remove(randomNumber);
+            cookie.setX(XCord);
+            cookie.setLocation(XCord, -200);
             cookies.add(cookie);
             panel.add(cookie);
             cookie.addActionListener(e -> {
@@ -66,7 +78,8 @@ public class testClass {
                 counter.addCookie();
                 label.setText("Cookie count: " + counter.getCookie());
                 panel.repaint();
-                spawnCookie(cookies, panel, counter, label); // ✅ recursive call
+                spawningPoint.add(clicked.getX());
+                spawnCookie(cookies, panel, counter, label, spawningPoint); // ✅ recursive call
             });
         }
 
@@ -86,7 +99,8 @@ public class testClass {
             for (Cookie c : toRemove) {
                 panel.remove(c);
                 cookies.remove(c);
-                spawnCookie(cookies, panel, counter, label);
+                spawningPoint.add(c.getX());
+                spawnCookie(cookies, panel, counter, label, spawningPoint);
             }
 
             panel.repaint();
@@ -97,12 +111,15 @@ public class testClass {
     }
 
     private static void spawnCookie(
-            ArrayList<Cookie> cookies, JPanel panel, CookieCounter counter, JLabel label
+            ArrayList<Cookie> cookies, JPanel panel, CookieCounter counter, JLabel label, ArrayList<Integer> spawningPoint
     ) {
         if (cookies.size() < maxCookies) {
             Cookie cookie = new Cookie("/images/cookie.png", "Cookie" + (cookies.size() + 1));
-            int startX = (int)(Math.random() * (panel.getWidth() - 150));
-            cookie.setLocation(startX, 0);
+            int randomNumber = cookie.random(spawningPoint);
+            int XCord = spawningPoint.get(randomNumber);
+            spawningPoint.remove(randomNumber);
+            cookie.setX(XCord);
+            cookie.setLocation(XCord, -200);
             panel.add(cookie);
             panel.repaint();
 
@@ -113,7 +130,8 @@ public class testClass {
                 counter.addCookie();
                 label.setText("Cookie count: " + counter.getCookie());
                 panel.repaint();
-                spawnCookie(cookies, panel, counter, label); // ✅ recursive call
+                spawningPoint.add(cookie.getX());
+                spawnCookie(cookies, panel, counter, label, spawningPoint); // ✅ recursive call
             });
 
             cookies.add(cookie);
