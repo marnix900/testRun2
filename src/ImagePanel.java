@@ -1,10 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * A custom JPanel that draws a background image
- * and has a colored border.
- */
 public class ImagePanel extends JPanel {
     private Image backgroundImage;
     private Color borderColor;

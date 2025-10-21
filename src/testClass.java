@@ -8,13 +8,14 @@ public class testClass {
     private CookieCounter cookie;
     private static final int maxCookies = 3;
     private static final int fallSpeed = 5;
+    private static final int CPS = 0; //cookies per second
+    private static long g;
 
     public testClass(CookieCounter cookie) {
         this.cookie = cookie;
     }
 
     private static void createAndShowGUI() {
-        //Create and set up the window.
         JFrame frame = new JFrame("Cookie Clicker");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1062, 706);
@@ -23,11 +24,14 @@ public class testClass {
         ImagePanel panel = new ImagePanel("/images/blueSkyBackground.jpeg", Color.BLACK, 662, 706);
         frame.add(panel, BorderLayout.WEST);
 
-        Label label = new Label("Cookie count: 0", Color.GRAY);
+        Label label = new Label(
+                "<html>Cookie count: 0<br>CPS: 0<br>Countdown: 200</html>",
+                Color.GRAY
+        );
         label.setBounds(231, 20, 200, 60);
         panel.add(label);
 
-        int spacing = 640 / 10;
+        int spacing = 640 / 10;//hardcoded
         ArrayList<Integer> spawningPoint = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             spawningPoint.add(i*spacing);
@@ -42,13 +46,15 @@ public class testClass {
         storePanel.add(cursorUpgrade);
 
         CookieCounter counter = new CookieCounter(0);
+        CPS cps = new CPS(0);
+        CountDown time = new CountDown(60);
 
         ActionListener upgradeListener = e -> {
             Upgrade upgradeClicked = (Upgrade) e.getSource();
             if ((counter.getCookie() >= 10) && (!cursorUpgrade.getUpgraded())) {
                 counter.setCookie(counter.getCookie() - 10);
                 counter.setIncrement(counter.getIncrement()*2);
-                label.setText("Cookie count: " + counter.getCookie());
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
                 System.out.println("Upgrade purchased!");
                 cursorUpgrade.setUpgraded(true);
             } if (cursorUpgrade.getUpgraded()) {
@@ -76,14 +82,19 @@ public class testClass {
                 panel.remove(clicked);
                 cookies.remove(clicked);
                 counter.addCookie();
-                label.setText("Cookie count: " + counter.getCookie());
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
                 panel.repaint();
                 spawningPoint.add(clicked.getX());
-                spawnCookie(cookies, panel, counter, label, spawningPoint); // ✅ recursive call
+                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time); // ✅ recursive call
             });
         }
 
         Timer fallTimer = new Timer(20, e -> {
+            if ((g*20)%1000 == 0) {
+                time.setTime(time.getTime() - 1);
+            }
+            g = g + 1;
+            label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
             ArrayList<Cookie> toRemove = new ArrayList<>();
 
             for (Cookie cookie : new ArrayList<>(cookies)) {
@@ -100,7 +111,7 @@ public class testClass {
                 panel.remove(c);
                 cookies.remove(c);
                 spawningPoint.add(c.getX());
-                spawnCookie(cookies, panel, counter, label, spawningPoint);
+                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time);
             }
 
             panel.repaint();
@@ -111,7 +122,7 @@ public class testClass {
     }
 
     private static void spawnCookie(
-            ArrayList<Cookie> cookies, JPanel panel, CookieCounter counter, JLabel label, ArrayList<Integer> spawningPoint
+            ArrayList<Cookie> cookies, JPanel panel, CookieCounter counter, JLabel label, ArrayList<Integer> spawningPoint,  CPS cps, CountDown time
     ) {
         if (cookies.size() < maxCookies) {
             Cookie cookie = new Cookie("/images/cookie.png", "Cookie" + (cookies.size() + 1));
@@ -128,10 +139,10 @@ public class testClass {
                 panel.remove(clicked);
                 cookies.remove(clicked);
                 counter.addCookie();
-                label.setText("Cookie count: " + counter.getCookie());
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
                 panel.repaint();
                 spawningPoint.add(cookie.getX());
-                spawnCookie(cookies, panel, counter, label, spawningPoint); // ✅ recursive call
+                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time); // ✅ recursive call
             });
 
             cookies.add(cookie);
