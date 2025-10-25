@@ -21,15 +21,22 @@ class Label extends JLabel {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // semi-transparent gray
         g2.setColor(new Color(
                 backgroundColor.getRed(),
                 backgroundColor.getGreen(),
                 backgroundColor.getBlue(),
-                transparency // alpha transparency (0–255)
+                transparency // (0–255)
         ));
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius);
         super.paintComponent(g);
         g2.dispose();
+    }
+
+    public int getTransparency() {
+        return this.transparency;
+    }
+
+    public void setTransparency(int transparency) {
+        this.transparency = transparency;
     }
 }

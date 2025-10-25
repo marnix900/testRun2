@@ -1,3 +1,14 @@
+/**
+ * Cookie Clicker
+ *
+ *
+ *
+ * @author Alex Aichimoaie
+ * @id 2339730
+ * @author Marnix van den Bosch
+ * @id 2293781
+ */
+
 import java.awt.event.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,12 +21,64 @@ public class testClass {
     private static final int fallSpeed = 5;
     private static final int CPS = 0; //cookies per second
     private static long g;
+    private static final int popUpSpeed = 3;
+    private static float scale = 1.0f;
+    private static boolean growing = true;
+    private static boolean startClicked = false;
 
-    public testClass(CookieCounter cookie) {
-        this.cookie = cookie;
+    public static void startTutorial() {
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1062, 706);
+        frame.setLocation(100, 100);
+        frame.setVisible(true);
+
+        ImagePanel tutorialPanel = new ImagePanel("/images/gray.png", Color.BLACK, 1062, 706);
+        frame.add(tutorialPanel);
+        frame.setVisible(true);
+
+        Label welcomeMessage = new Label("<html>Welcome to our game: Cookie Clicker.<br><br>Your goal is to collect as many cookies as possible. Click on the falling cookies to collect them.<br>Use them to buy upgrades that will help you to collect your cookies even faster.<br><br>Created by Marnix van den Bosch and Alex Aichimoaie.</html>", Color.RED, 0);
+        tutorialPanel.add(welcomeMessage);
+        welcomeMessage.setBounds(100, -200, 862, 706);
+
+
+        JButton startButton = new JButton("Press to Start");
+        startButton.setSize(200, 100);
+        startButton.setLocation((frame.getWidth()-startButton.getWidth())/2, (frame.getHeight()-startButton.getHeight())/2);
+        startButton.setBackground(Color.GREEN);
+        tutorialPanel.add(startButton);
+        startButton.addActionListener(e -> {
+            frame.remove(tutorialPanel);
+            frame.dispose();
+            runGame();
+            startClicked = true;
+        });
+
+        Timer pulseTimer = new Timer(50, new ActionListener() {
+            private final float SCALE_SPEED = 0.02f;
+            private final float MIN_SCALE = 1.0f;
+            private final float MAX_SCALE = 1.2f;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (growing) {
+                    scale += SCALE_SPEED;
+                    if (scale >= MAX_SCALE) growing = false;
+                } else {
+                    scale -= SCALE_SPEED;
+                    if (scale <= MIN_SCALE) growing = true;
+                }
+                startButton.revalidate();
+                startButton.repaint();
+            }
+        });
+        if (startClicked == true) {
+            pulseTimer.stop();
+        }
+        pulseTimer.start();
     }
 
-    private static void createAndShowGUI() {
+    private static void runGame() {
         JFrame frame = new JFrame("Cookie Clicker");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1062, 706);
@@ -34,8 +97,6 @@ public class testClass {
             spawningPoint.add(i*spacing);
         }
 
-        System.out.println("spawning point: " + spawningPoint);
-
         ImagePanel storePanel = new ImagePanel("/images/wood.jpg", Color.BLACK, 400, 706);
         frame.add(storePanel, BorderLayout.EAST);
 
@@ -51,25 +112,27 @@ public class testClass {
         factoryLabel.setBounds(250, 250, 40, 40);
         storePanel.add(factoryLabel);
 
-        Label popUpLabel = new Label("Upgrade purchased!", Color.BLACK, 155);
-        popUpLabel.setBounds(100, 200, 150, 60);
+        ArrayList<Label> labels = new ArrayList<>();
+
 
         CookieCounter counter = new CookieCounter(0);
         CPS cps = new CPS(0);
         CountDown time = new CountDown(60);
 
         ActionListener upgradeListener = e -> {
-            Upgrade upgradeClicked = (Upgrade) e.getSource();
             if ((counter.getCookie() >= 10) && (!cursorUpgrade.getUpgraded())) { //requirements for upgrade
                 counter.setCookie(counter.getCookie() - 10); //cost
                 counter.setIncrement(counter.getIncrement()*2); //upgrade
                 label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
-                System.out.println("Upgrade purchased!");
+                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155);
+                showPopUp(upgradeLabel, panel, labels);
                 cursorUpgrade.setUpgraded(true);
             } if (cursorUpgrade.getUpgraded()) {
-                System.out.println("Upgrade already purchased!");
+                Label upgradeFailedLabel = new Label("Upgrade already purchased!", Color.BLACK, 155);
+                showPopUp(upgradeFailedLabel, panel, labels);
             } else {
-                System.out.println("Upgrade failed!");
+                Label upgradeFailedLabel = new Label("Not enough cookies!", Color.BLACK, 155);
+                showPopUp(upgradeFailedLabel, panel, labels);
             }
         };
 
@@ -81,7 +144,11 @@ public class testClass {
                 label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
                 factory.setUpgradeCount(factory.getUpgradeCount()+1);
                 factoryLabel.setText("" + factory.getUpgradeCount());
-                System.out.println("Upgrade purchased!");
+                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155);
+                showPopUp(upgradeLabel, panel, labels);
+            } else {
+                Label upgradeLabel = new Label("Not enough cookies!", Color.BLACK, 155);
+                showPopUp(upgradeLabel, panel, labels);
             }
         };
 
@@ -137,11 +204,31 @@ public class testClass {
                 spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time);
             }
 
+            ArrayList<Label> toRemove2 = new ArrayList<>();
+            for (Label l : labels) {
+                l.setLocation(l.getX(), l.getY() - popUpSpeed);
+                l.setTransparency(l.getTransparency()-1);
+                if (l.getY() < 100) {
+                    panel.remove(l);
+                    toRemove2.add(l);
+                }
+            }
+            labels.removeAll(toRemove2);
+
+
+
             panel.repaint();
         });
         fallTimer.start();
 
         frame.setVisible(true);
+    }
+
+    private static void showPopUp(Label label, ImagePanel panel, ArrayList<Label> labels) {
+        //JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+        label.setBounds(panel.getWidth()/2-75, 200, 150, 60);
+        labels.add(label);
+        panel.add(label);
     }
 
     private static void spawnCookie(
@@ -173,6 +260,6 @@ public class testClass {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
+        SwingUtilities.invokeLater(() -> startTutorial());
     }
 }
