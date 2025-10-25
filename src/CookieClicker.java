@@ -14,7 +14,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class testClass {
+public class CookieClicker {
 
     private CookieCounter cookie;
     private static final int maxCookies = 3;
@@ -25,6 +25,9 @@ public class testClass {
     private static float scale = 1.0f;
     private static boolean growing = true;
     private static boolean startClicked = false;
+    private static boolean miniGameStarted = false;
+    public static boolean miniGameFinished = false;
+    private static final int miniGameTime = 4;
 
     public static void startTutorial() {
         JFrame frame = new JFrame();
@@ -87,7 +90,7 @@ public class testClass {
         ImagePanel panel = new ImagePanel("/images/blueSkyBackground.jpeg", Color.BLACK, 662, 706);
         frame.add(panel, BorderLayout.WEST);
 
-        Label label = new Label("<html>Cookie count: 0<br>CPS: 0<br>Countdown: 200</html>", Color.GRAY, 155);
+        Label label = new Label("<html>Cookie count: 0<br>CPS: 0<br>Milk Storm: 200</html>", Color.GRAY, 155);
         label.setBounds(231, 20, 200, 60);
         panel.add(label);
 
@@ -117,13 +120,13 @@ public class testClass {
 
         CookieCounter counter = new CookieCounter(0);
         CPS cps = new CPS(0);
-        CountDown time = new CountDown(60);
+        CountDown time = new CountDown(miniGameTime);
 
         ActionListener upgradeListener = e -> {
             if ((counter.getCookie() >= 10) && (!cursorUpgrade.getUpgraded())) { //requirements for upgrade
                 counter.setCookie(counter.getCookie() - 10); //cost
                 counter.setIncrement(counter.getIncrement()*2); //upgrade
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
                 Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155);
                 showPopUp(upgradeLabel, panel, labels);
                 cursorUpgrade.setUpgraded(true);
@@ -141,7 +144,7 @@ public class testClass {
                 counter.setCookie(counter.getCookie() - factory.getCost()); //cost
                 cps.setCps(cps.getCps()+factory.getFactoryCPS()); //upgrade
                 factory.setCost(factory.getCost()*factory.getMultiplier());
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
                 factory.setUpgradeCount(factory.getUpgradeCount()+1);
                 factoryLabel.setText("" + factory.getUpgradeCount());
                 Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155);
@@ -171,12 +174,14 @@ public class testClass {
                 panel.remove(clicked);
                 cookies.remove(clicked);
                 counter.addCookie();
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
                 panel.repaint();
                 spawningPoint.add(clicked.getX());
                 spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time); // ✅ recursive call
             });
         }
+
+        MilkCatcherGame game = new MilkCatcherGame();
 
         Timer fallTimer = new Timer(20, e -> {
             if ((g*20)%1000 == 0) { //is true in intervals of 1 second
@@ -184,8 +189,31 @@ public class testClass {
                 counter.setCookie(counter.getCookie() + cps.getCps());
             }
             g = g + 1;
-            label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
+            label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
             ArrayList<Cookie> toRemove = new ArrayList<>();
+            /*
+            if (time.getTime() <= 0 && !miniGameStarted) {
+                game.startGame();
+                miniGameStarted = true;
+                frame.remove(panel);
+                frame.add(game);
+                System.out.println("game is running");
+                frame.revalidate();
+                frame.repaint();
+                game.setFocusable(true);
+                game.requestFocusInWindow(); //so that you dont have to click on the window
+            }
+
+            if (miniGameFinished) {
+                miniGameStarted = false;
+                miniGameFinished = false;
+                time.setTime(miniGameTime);
+                frame.remove(game);
+                frame.add(panel);
+                frame.revalidate();
+                frame.repaint();
+            }
+            */
 
             for (Cookie cookie : new ArrayList<>(cookies)) {
                 Point p = cookie.getLocation();
@@ -220,7 +248,6 @@ public class testClass {
             panel.repaint();
         });
         fallTimer.start();
-
         frame.setVisible(true);
     }
 
@@ -249,7 +276,7 @@ public class testClass {
                 panel.remove(clicked);
                 cookies.remove(clicked);
                 counter.addCookie();
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Countdown: " + time.getTime() + "</html>");
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
                 panel.repaint();
                 spawningPoint.add(cookie.getX());
                 spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time); // ✅ recursive call
@@ -260,6 +287,6 @@ public class testClass {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> startTutorial());
+        SwingUtilities.invokeLater(() -> runGame()); //required for swing
     }
 }
