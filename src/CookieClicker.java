@@ -28,6 +28,9 @@ public class CookieClicker {
     private static boolean miniGameStarted = false;
     public static boolean miniGameFinished = false;
     private static final int miniGameTime = 4;
+    public static int milkCount = 0;
+    private static boolean cursorMilkUpgradable = false;
+    private static boolean cursorMilkUpgraded = false;
 
     public static void startTutorial() {
         JFrame frame = new JFrame();
@@ -40,7 +43,7 @@ public class CookieClicker {
         frame.add(tutorialPanel);
         frame.setVisible(true);
 
-        Label welcomeMessage = new Label("<html>Welcome to our game: Cookie Clicker.<br><br>Your goal is to collect as many cookies as possible. Click on the falling cookies to collect them.<br>Use them to buy upgrades that will help you to collect your cookies even faster.<br><br>Created by Marnix van den Bosch and Alex Aichimoaie.</html>", Color.RED, 0);
+        Label welcomeMessage = new Label("<html>Welcome to our game: Cookie Clicker.<br><br>Your goal is to collect as many cookies as possible. Click on the falling cookies to collect them.<br>Use them to buy upgrades that will help you to collect your cookies even faster.<br><br>Created by Marnix van den Bosch and Alex Aichimoaie.</html>", Color.RED, 0, 20);
         tutorialPanel.add(welcomeMessage);
         welcomeMessage.setBounds(100, -200, 862, 706);
 
@@ -90,9 +93,13 @@ public class CookieClicker {
         ImagePanel panel = new ImagePanel("/images/blueSkyBackground.jpeg", Color.BLACK, 662, 706);
         frame.add(panel, BorderLayout.WEST);
 
-        Label label = new Label("<html>Cookie count: 0<br>CPS: 0<br>Milk Storm: 200</html>", Color.GRAY, 155);
-        label.setBounds(231, 20, 200, 60);
+        Label label = new Label("<html>Cookie count: 0<br>CPS: 0</html>", Color.BLACK, 255, 20);
+        label.setBounds(0, 0, 300, 40);
         panel.add(label);
+
+        Label label2 = new Label("<html>Milk Storm: 0<br>Milk: 0</html>", Color.BLACK, 255, 20);
+        label2.setBounds(300, 0, 500, 40);
+        panel.add(label2);
 
         int spacing = 640 / 10;//hardcoded
         ArrayList<Integer> spawningPoint = new ArrayList<>();
@@ -107,34 +114,80 @@ public class CookieClicker {
         cursorUpgrade.setLocation(100, 50);
         storePanel.add(cursorUpgrade);
 
+        Label costCursor = new Label("" + cursorUpgrade.getCost(), Color.BLACK, 255, 20);
+        costCursor.setBounds(250, 100, 40, 40);
+        storePanel.add(costCursor);
+
+        Label multiplierCursor = new Label("x2", Color.BLACK, 255, 20);
+        multiplierCursor.setBounds(250, 150, 40, 40);
+        storePanel.add(multiplierCursor);
+
+        Grandma grandma = new Grandma("/images/grandma.png");
+        grandma.setLocation(100, 250);
+        storePanel.add(grandma);
+
+        Label grandmaLabel = new Label("0", Color.BLACK, 255, 20);
+        grandmaLabel.setBounds(250, 250, 40, 40);
+        storePanel.add(grandmaLabel);
+
+        Label costGrandmaLabel = new Label("" + grandma.getCost(), Color.BLACK, 255, 20);
+        costGrandmaLabel.setBounds(250, 300, 40, 40);
+        storePanel.add(costGrandmaLabel);
+
+        Label cpsGrandmaLabel = new Label("" + grandma.getGrandmaCPS(), Color.BLACK, 255, 20);
+        cpsGrandmaLabel.setBounds(250, 350, 40, 40);
+        storePanel.add(cpsGrandmaLabel);
+
         Factory factory = new Factory("/images/Factory.png");
-        factory.setLocation(100, 250);
+        factory.setLocation(100, 450);
         storePanel.add(factory);
 
-        Label factoryLabel = new Label("0", Color.BLACK, 255);
-        factoryLabel.setBounds(250, 250, 40, 40);
+        Label factoryLabel = new Label("0", Color.BLACK, 255, 20);
+        factoryLabel.setBounds(250, 450, 40, 40);
         storePanel.add(factoryLabel);
+
+        Label costFactoryLabel = new Label("" + factory.getCost(), Color.BLACK, 255, 20);
+        costFactoryLabel.setBounds(250, 500, 40, 40);
+        storePanel.add(costFactoryLabel);
+
+        Label cpsFactoryLabel = new Label("0", Color.BLACK, 255, 20);
+        cpsFactoryLabel.setBounds(250, 550, 40, 40);
+        storePanel.add(cpsFactoryLabel);
 
         ArrayList<Label> labels = new ArrayList<>();
 
+        Milk milk = new Milk();
 
         CookieCounter counter = new CookieCounter(0);
         CPS cps = new CPS(0);
         CountDown time = new CountDown(miniGameTime);
 
         ActionListener upgradeListener = e -> {
-            if ((counter.getCookie() >= 10) && (!cursorUpgrade.getUpgraded())) { //requirements for upgrade
-                counter.setCookie(counter.getCookie() - 10); //cost
+            if ((counter.getCookie() >= cursorUpgrade.getCost()) && (!cursorUpgrade.getUpgraded())) { //requirements for upgrade
+                counter.setCookie(counter.getCookie() - cursorUpgrade.getCost()); //cost
                 counter.setIncrement(counter.getIncrement()*2); //upgrade
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
-                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155);
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
+                label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
+                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155, 20);
                 showPopUp(upgradeLabel, panel, labels);
                 cursorUpgrade.setUpgraded(true);
-            } if (cursorUpgrade.getUpgraded()) {
-                Label upgradeFailedLabel = new Label("Upgrade already purchased!", Color.BLACK, 155);
+                storePanel.remove(costCursor);
+                storePanel.remove(multiplierCursor);
+                storePanel.repaint();
+                cursorUpgrade.setMilkCost(10);
+                cursorUpgrade.setCost(0);
+            } else if ((milk.getMilkCount() >= cursorUpgrade.getMilkCost()) && (cursorMilkUpgradable) && (!cursorMilkUpgraded)) {
+                milk.setMilkCount(milk.getMilkCount() - cursorUpgrade.getMilkCost());
+                counter.setIncrement(counter.getIncrement()*5);
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
+                label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
+                cursorMilkUpgraded = true;
+
+            } else if (cursorUpgrade.getUpgraded()) {
+                Label upgradeFailedLabel = new Label("Upgrade already purchased!", Color.BLACK, 155, 20);
                 showPopUp(upgradeFailedLabel, panel, labels);
             } else {
-                Label upgradeFailedLabel = new Label("Not enough cookies!", Color.BLACK, 155);
+                Label upgradeFailedLabel = new Label("Not enough cookies!", Color.BLACK, 155, 20);
                 showPopUp(upgradeFailedLabel, panel, labels);
             }
         };
@@ -144,18 +197,39 @@ public class CookieClicker {
                 counter.setCookie(counter.getCookie() - factory.getCost()); //cost
                 cps.setCps(cps.getCps()+factory.getFactoryCPS()); //upgrade
                 factory.setCost(factory.getCost()*factory.getMultiplier());
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
+                costFactoryLabel.setText("" + factory.getCost());
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
+                label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
                 factory.setUpgradeCount(factory.getUpgradeCount()+1);
                 factoryLabel.setText("" + factory.getUpgradeCount());
-                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155);
+                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155, 20);
                 showPopUp(upgradeLabel, panel, labels);
             } else {
-                Label upgradeLabel = new Label("Not enough cookies!", Color.BLACK, 155);
+                Label upgradeLabel = new Label("Not enough cookies!", Color.BLACK, 155, 20);
+                showPopUp(upgradeLabel, panel, labels);
+            }
+        };
+
+        ActionListener grandmaListener = e -> {
+            if (counter.getCookie() >= grandma.getCost()) { //requirements for upgrade
+                counter.setCookie(counter.getCookie() - grandma.getCost()); //cost
+                cps.setCps(cps.getCps()+grandma.getGrandmaCPS()); //upgrade
+                grandma.setCost(grandma.getCost()*grandma.getMultiplier());
+                costGrandmaLabel.setText("" + grandma.getCost());
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
+                label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
+                grandma.setUpgradeCount(grandma.getUpgradeCount()+1);
+                grandmaLabel.setText("" + grandma.getUpgradeCount());
+                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155, 20);
+                showPopUp(upgradeLabel, panel, labels);
+            } else {
+                Label upgradeLabel = new Label("Not enough cookies!", Color.BLACK, 155, 20);
                 showPopUp(upgradeLabel, panel, labels);
             }
         };
 
         cursorUpgrade.addActionListener(upgradeListener);
+        grandma.addActionListener(grandmaListener);
         factory.addActionListener(upgradeFactoryListener);
 
         //initial cookies
@@ -174,10 +248,11 @@ public class CookieClicker {
                 panel.remove(clicked);
                 cookies.remove(clicked);
                 counter.addCookie();
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
+                label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
                 panel.repaint();
                 spawningPoint.add(clicked.getX());
-                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time); // ✅ recursive call
+                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time, label2, milk); // ✅ recursive call
             });
         }
 
@@ -189,9 +264,10 @@ public class CookieClicker {
                 counter.setCookie(counter.getCookie() + cps.getCps());
             }
             g = g + 1;
-            label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
+            label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
+            label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
             ArrayList<Cookie> toRemove = new ArrayList<>();
-            /*
+
             if (time.getTime() <= 0 && !miniGameStarted) {
                 game.startGame();
                 miniGameStarted = true;
@@ -204,6 +280,11 @@ public class CookieClicker {
                 game.requestFocusInWindow(); //so that you dont have to click on the window
             }
 
+            if (milkCount != 0) {
+                milk.setMilkCount(milk.getMilkCount() + milkCount);
+                milkCount = 0;
+            }
+
             if (miniGameFinished) {
                 miniGameStarted = false;
                 miniGameFinished = false;
@@ -213,7 +294,6 @@ public class CookieClicker {
                 frame.revalidate();
                 frame.repaint();
             }
-            */
 
             for (Cookie cookie : new ArrayList<>(cookies)) {
                 Point p = cookie.getLocation();
@@ -229,7 +309,7 @@ public class CookieClicker {
                 panel.remove(c);
                 cookies.remove(c);
                 spawningPoint.add(c.getX());
-                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time);
+                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time, label2, milk);
             }
 
             ArrayList<Label> toRemove2 = new ArrayList<>();
@@ -259,8 +339,7 @@ public class CookieClicker {
     }
 
     private static void spawnCookie(
-            ArrayList<Cookie> cookies, JPanel panel, CookieCounter counter, Label label, ArrayList<Integer> spawningPoint,  CPS cps, CountDown time
-    ) {
+            ArrayList<Cookie> cookies, JPanel panel, CookieCounter counter, Label label, ArrayList<Integer> spawningPoint,  CPS cps, CountDown time, Label label2, Milk milk) {
         if (cookies.size() < maxCookies) {
             Cookie cookie = new Cookie("/images/cookie.png", "Cookie" + (cookies.size() + 1));
             int randomNumber = cookie.random(spawningPoint);
@@ -276,10 +355,11 @@ public class CookieClicker {
                 panel.remove(clicked);
                 cookies.remove(clicked);
                 counter.addCookie();
-                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "<br>Milk Storm: " + time.getTime() + "</html>");
+                label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
+                label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
                 panel.repaint();
                 spawningPoint.add(cookie.getX());
-                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time); // ✅ recursive call
+                spawnCookie(cookies, panel, counter, label, spawningPoint, cps, time, label2, milk); // ✅ recursive call
             });
 
             cookies.add(cookie);

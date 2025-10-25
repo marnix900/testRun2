@@ -227,8 +227,8 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
             g.drawString("Time’s up!", WIDTH / 2 - 100, HEIGHT / 2 - 10);
             g.setFont(new Font("Arial", Font.PLAIN, 25));
             g.drawString("Final Score: " + score, WIDTH / 2 - 90, HEIGHT / 2 + 30);
-            g.drawString("Press SPACE to restart", WIDTH / 2 - 130, HEIGHT / 2 + 60);
-            CookieClicker.miniGameFinished = true;
+            g.drawString("Press SPACE to continue...", WIDTH / 2 - 130, HEIGHT / 2 + 60);
+            CookieClicker.milkCount = score;
         }
     }
 
@@ -238,7 +238,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
             if (key == KeyEvent.VK_LEFT && cookieX > 0) cookieX -= 20;
             if (key == KeyEvent.VK_RIGHT && cookieX < WIDTH - cookieImg.getWidth()) cookieX += 20;
         }
-        if (key == KeyEvent.VK_SPACE && gameOver) startGame();
+        if (key == KeyEvent.VK_SPACE && gameOver) CookieClicker.miniGameFinished = true;
     }
 
     public void keyReleased(KeyEvent e) {}

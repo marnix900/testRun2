@@ -1,14 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Factory extends JButton {
+public class Grandma extends JButton {
     private Image scaledImage;
     private int upgradeCount;
-    private int factoryCPS = 20;
+    private int factoryCPS = 1;
     private int cost = 20;
     private int costMultiplier = 2;
 
-    public Factory(String imagePath) {
+    public Grandma(String imagePath) {
         ImageIcon upgradeIcon = new ImageIcon(getClass().getResource(imagePath));
         scaledImage = upgradeIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 
@@ -29,11 +29,11 @@ public class Factory extends JButton {
         return this.upgradeCount;
     }
 
-    public void setFactoryCPS(int factoryCPS) {
+    public void setGrandmaCPS(int factoryCPS) {
         this.factoryCPS = factoryCPS;
     }
 
-    public int getFactoryCPS() {
+    public int getGrandmaCPS() {
         return this.factoryCPS;
     }
 
@@ -48,7 +48,4 @@ public class Factory extends JButton {
     public int getMultiplier() {
         return this.costMultiplier;
     }
-
-
-
 }
