@@ -375,6 +375,6 @@ public class CookieClicker {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> runGame()); //required for swing
+        SwingUtilities.invokeLater(() -> startTutorial()); //required for swing
     }
 }
