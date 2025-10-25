@@ -1,118 +1,243 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import javax.imageio.ImageIO;
 
 public class MilkCatcherGame extends JPanel implements ActionListener, KeyListener {
 
     private final int WIDTH = 500;
     private final int HEIGHT = 700;
-    private final int SPEED = 4;
+    private final int SPEED = 5;
+    private final int GAME_DURATION = 20000; // 20 seconds
 
     private int cookieX = WIDTH / 2 - 40;
     private int score = 0;
-    private int missed = 0;
 
-    private Timer timer;
+    private javax.swing.Timer timer;
+    private long startTime;
+    private boolean gameOver = false;
+
     private Random rand = new Random();
-
     private java.util.List<Point> milkDrops = new ArrayList<>();
+    private java.util.List<Point> obstacles = new ArrayList<>();
+    private java.util.List<Particle> particles = new ArrayList<>();
 
-    // Images
-    private Image cookieImg;
-    private Image milkImg;
-    private Image backgroundImg;
+    private BufferedImage cookieImg;
+    private BufferedImage milkImg;
+    private BufferedImage backgroundImg;
+    private BufferedImage obstacleImg;  // obstacle image
+
+    private boolean doublePoints = false;
+    private long doublePointsEndTime = 0;
+
+    private String[] funMessages = {
+        "Yum!", "Delicious!", "Nice catch!", "Milk + Cookie = ❤️", "Cheese?! Wait, no..."
+    };
+
+    private String hitMessage = ""; // message when hitting obstacle
+    private long messageEndTime = 0; // message duration
 
     public MilkCatcherGame() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
-
-        // Load images
-        cookieImg = new ImageIcon("cookie.png").getImage()
-            .getScaledInstance(80, 50, Image.SCALE_SMOOTH);
-        milkImg = new ImageIcon("milk.png").getImage()
-            .getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-
-        // Load and resize background to fill window
-        backgroundImg = new ImageIcon("background.png").getImage()
-            .getScaledInstance(WIDTH, HEIGHT, Image.SCALE_SMOOTH);
-
-        timer = new Timer(30, this);
-        timer.start();
-
-        addKeyListener(this);
         setFocusable(true);
+        addKeyListener(this);
+
+        try {
+            cookieImg = ImageIO.read(new File("cookie.png"));
+            milkImg = ImageIO.read(new File("milk.png"));
+            backgroundImg = ImageIO.read(new File("background.png"));
+            obstacleImg = ImageIO.read(new File("obstacle.png")); // load obstacle image
+
+            cookieImg = resize(cookieImg, 80, 50);
+            milkImg = resize(milkImg, 25, 25);
+            backgroundImg = resize(backgroundImg, WIDTH, HEIGHT);
+            obstacleImg = resize(obstacleImg, 30, 30); // resize obstacle
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        timer = new javax.swing.Timer(30, this);
+        startGame();
+    }
+
+    private void startGame() {
+        score = 0;
+        cookieX = WIDTH / 2 - 40;
+        milkDrops.clear();
+        obstacles.clear();
+        particles.clear();
+        startTime = System.currentTimeMillis();
+        gameOver = false;
+        doublePoints = false;
+        hitMessage = "";
+        timer.start();
+    }
+
+    private BufferedImage resize(BufferedImage img, int w, int h) {
+        Image tmp = img.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (rand.nextInt(15) == 0) {
-            milkDrops.add(new Point(rand.nextInt(WIDTH - 25), 0));
+        if (gameOver) return;
+
+        long elapsed = System.currentTimeMillis() - startTime;
+        if (elapsed >= GAME_DURATION) {
+            gameOver = true;
+            timer.stop();
+            repaint();
+            return;
         }
 
-        Iterator<Point> it = milkDrops.iterator();
-        while (it.hasNext()) {
-            Point p = it.next();
+        if (rand.nextInt(15) == 0) {
+            milkDrops.add(new Point(rand.nextInt(WIDTH - milkImg.getWidth()), 0));
+        }
+
+        if (rand.nextInt(80) == 0) {
+            obstacles.add(new Point(rand.nextInt(WIDTH - 30), 0));
+        }
+
+        Iterator<Point> milkIt = milkDrops.iterator();
+        while (milkIt.hasNext()) {
+            Point p = milkIt.next();
             p.y += SPEED;
 
-            Rectangle dropRect = new Rectangle(p.x, p.y, 25, 25);
-            Rectangle cookieRect = new Rectangle(cookieX, HEIGHT - 60, 80, 50);
+            Rectangle dropRect = new Rectangle(p.x, p.y, milkImg.getWidth(), milkImg.getHeight());
+            Rectangle cookieRect = new Rectangle(cookieX, HEIGHT - cookieImg.getHeight() - 10,
+                    cookieImg.getWidth(), cookieImg.getHeight());
 
             if (dropRect.intersects(cookieRect)) {
-                score++;
-                it.remove();
+                score += doublePoints ? 2 : 1;
+                milkIt.remove();
+                spawnParticles(p.x + milkImg.getWidth() / 2, p.y + milkImg.getHeight() / 2);
+
+                if (rand.nextInt(5) == 0) {
+                    System.out.println(funMessages[rand.nextInt(funMessages.length)]);
+                }
+
+                if (rand.nextInt(10) == 0) {
+                    doublePoints = true;
+                    doublePointsEndTime = System.currentTimeMillis() + 5000; // 5 seconds
+                }
             } else if (p.y > HEIGHT) {
-                missed++;
-                it.remove();
+                milkIt.remove();
             }
+        }
+
+        Iterator<Point> obsIt = obstacles.iterator();
+        while (obsIt.hasNext()) {
+            Point o = obsIt.next();
+            o.y += SPEED + 2;
+
+            Rectangle obsRect = new Rectangle(o.x, o.y, 30, 30);
+            Rectangle cookieRect = new Rectangle(cookieX, HEIGHT - cookieImg.getHeight() - 10,
+                    cookieImg.getWidth(), cookieImg.getHeight());
+
+            if (obsRect.intersects(cookieRect)) {
+                score = Math.max(0, score - 5);
+                obsIt.remove();
+
+                // Show hit message
+                hitMessage = "Ouch! -5 points!";
+                messageEndTime = System.currentTimeMillis() + 1500; // 1.5 seconds
+            } else if (o.y > HEIGHT) {
+                obsIt.remove();
+            }
+        }
+
+        Iterator<Particle> partIt = particles.iterator();
+        while (partIt.hasNext()) {
+            Particle p = partIt.next();
+            p.update();
+            if (!p.alive) partIt.remove();
+        }
+
+        if (doublePoints && System.currentTimeMillis() > doublePointsEndTime) {
+            doublePoints = false;
         }
 
         repaint();
     }
 
+    private void spawnParticles(int x, int y) {
+        for (int i = 0; i < 10; i++) {
+            particles.add(new Particle(x, y));
+        }
+    }
+
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawImage(backgroundImg, 0, 0, null);
 
-        // 🌄 Draw background first
-        g.drawImage(backgroundImg, 0, 0, this);
-
-        // 🥛 Draw milk drops
         for (Point p : milkDrops) {
-            g.drawImage(milkImg, p.x, p.y, this);
+            g.drawImage(milkImg, p.x, p.y, null);
         }
 
-        // 🍪 Draw cookie
-        g.drawImage(cookieImg, cookieX, HEIGHT - 60, this);
+        // Obstacles as images
+        for (Point o : obstacles) {
+            g.drawImage(obstacleImg, o.x, o.y, null);
+        }
 
-        // 🧾 Draw score
+        g.drawImage(cookieImg, cookieX, HEIGHT - cookieImg.getHeight() - 10, null);
+
+        for (Particle p : particles) {
+            p.draw(g);
+        }
+
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 20));
         g.drawString("Score: " + score, 20, 30);
-        g.drawString("Missed: " + missed, 20, 60);
 
-        if (missed >= 10) {
+        if (doublePoints) {
+            g.setColor(Color.RED);
+            g.drawString("DOUBLE POINTS!", 20, 60);
+        } else {
+            g.setColor(Color.BLACK);
+            long timeLeft = Math.max(0, (GAME_DURATION - (System.currentTimeMillis() - startTime)) / 1000);
+            g.drawString("Time: " + timeLeft + "s", 20, 60);
+        }
+
+        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.drawString("Use ← → to move", WIDTH - 200, 30);
+        g.drawString("Press SPACE to restart", WIDTH - 220, 55);
+        
+        if (!hitMessage.isEmpty() && System.currentTimeMillis() < messageEndTime) {
+            g.setFont(new Font("Arial", Font.BOLD, 25));
+            g.setColor(Color.RED);
+            g.drawString(hitMessage, WIDTH / 2 - 80, HEIGHT / 2 + 100);
+        } else if (System.currentTimeMillis() >= messageEndTime) {
+            hitMessage = "";
+        }
+
+        if (gameOver) {
             g.setFont(new Font("Arial", Font.BOLD, 40));
-            g.drawString("Game Over!", WIDTH / 2 - 120, HEIGHT / 2);
-            timer.stop();
+            g.setColor(new Color(0, 0, 0, 180));
+            g.fillRect(0, HEIGHT / 2 - 60, WIDTH, 120);
+
+            g.setColor(Color.WHITE);
+            g.drawString("Time’s up!", WIDTH / 2 - 100, HEIGHT / 2 - 10);
+            g.setFont(new Font("Arial", Font.PLAIN, 25));
+            g.drawString("Final Score: " + score, WIDTH / 2 - 90, HEIGHT / 2 + 30);
+            g.drawString("Press SPACE to restart", WIDTH / 2 - 130, HEIGHT / 2 + 60);
         }
     }
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_LEFT && cookieX > 0) {
-            cookieX -= 20;
+        if (!gameOver) {
+            if (key == KeyEvent.VK_LEFT && cookieX > 0) cookieX -= 20;
+            if (key == KeyEvent.VK_RIGHT && cookieX < WIDTH - cookieImg.getWidth()) cookieX += 20;
         }
-        if (key == KeyEvent.VK_RIGHT && cookieX < WIDTH - 80) {
-            cookieX += 20;
-        }
-
-        if (key == KeyEvent.VK_SPACE && missed >= 10) {
-            score = 0;
-            missed = 0;
-            milkDrops.clear();
-            timer.start();
-        }
+        if (key == KeyEvent.VK_SPACE && gameOver) startGame();
     }
 
     public void keyReleased(KeyEvent e) {}
@@ -126,5 +251,32 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setResizable(false);
+    }
+
+    class Particle {
+        int x, y, size, dx, dy;
+        Color color;
+        boolean alive = true;
+
+        public Particle(int x, int y) {
+            this.x = x;
+            this.y = y;
+            size = rand.nextInt(5) + 3;
+            dx = rand.nextInt(7) - 3;
+            dy = rand.nextInt(3) - 2;
+            color = new Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+        }
+
+        void update() {
+            x += dx;
+            y += dy;
+            size--;
+            if (size <= 0) alive = false;
+        }
+
+        void draw(Graphics g) {
+            g.setColor(color);
+            g.fillOval(x, y, size, size);
+        }
     }
 }
