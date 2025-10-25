@@ -4,7 +4,7 @@ import java.awt.*;
 public class Upgrade extends JButton {
     private Image scaledImage;
     private Boolean upgraded = false;
-    private int cost = 10;
+    private int cost = 1;
     private int milkCost = 0;
 
     public Upgrade(String imagePath) {

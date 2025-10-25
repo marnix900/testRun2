@@ -27,7 +27,7 @@ public class CookieClicker {
     private static boolean startClicked = false;
     private static boolean miniGameStarted = false;
     public static boolean miniGameFinished = false;
-    private static final int miniGameTime = 4;
+    private static final int miniGameTime = 10;
     public static int milkCount = 0;
     private static boolean cursorMilkUpgradable = false;
     private static boolean cursorMilkUpgraded = false;
@@ -172,22 +172,29 @@ public class CookieClicker {
                 showPopUp(upgradeLabel, panel, labels);
                 cursorUpgrade.setUpgraded(true);
                 storePanel.remove(costCursor);
-                storePanel.remove(multiplierCursor);
+                multiplierCursor.setText("x5");
                 storePanel.repaint();
                 cursorUpgrade.setMilkCost(10);
                 cursorUpgrade.setCost(0);
-            } else if ((milk.getMilkCount() >= cursorUpgrade.getMilkCost()) && (cursorMilkUpgradable) && (!cursorMilkUpgraded)) {
+            } else if ((milk.getMilkCount() >= cursorUpgrade.getMilkCost()) && (cursorMilkUpgradable) && (!cursorMilkUpgraded) && (cursorUpgrade.getUpgraded())) {
                 milk.setMilkCount(milk.getMilkCount() - cursorUpgrade.getMilkCost());
                 counter.setIncrement(counter.getIncrement()*5);
                 label.setText("<html>Cookie count: " + counter.getCookie() + "<br>CPS: " + cps.getCps() + "</html>");
                 label2.setText("<html>Milk Storm: " + time.getTime() + "<br>Milk: " + milk.getMilkCount() + "</html>");
                 cursorMilkUpgraded = true;
-
-            } else if (cursorUpgrade.getUpgraded()) {
+                Label upgradeLabel = new Label("Upgrade purchased!", Color.BLACK, 155, 20);
+                showPopUp(upgradeLabel, panel, labels);
+            } else if ((counter.getCookie() < cursorUpgrade.getCost()) && (!cursorUpgrade.getUpgraded())) {
+                Label upgradeFailedLabel = new Label("Not enough cookies!", Color.BLACK, 155, 20);
+                showPopUp(upgradeFailedLabel, panel, labels);
+            } else if (cursorUpgrade.getUpgraded() && !cursorMilkUpgradable) {
                 Label upgradeFailedLabel = new Label("Upgrade already purchased!", Color.BLACK, 155, 20);
                 showPopUp(upgradeFailedLabel, panel, labels);
+            } else if (cursorMilkUpgradable && (milk.getMilkCount() < cursorUpgrade.getMilkCost())) {
+                Label upgradeFailedLabel = new Label("Not enough milk!", Color.BLACK, 155, 20);
+                showPopUp(upgradeFailedLabel, panel, labels);
             } else {
-                Label upgradeFailedLabel = new Label("Not enough cookies!", Color.BLACK, 155, 20);
+                Label upgradeFailedLabel = new Label("Upgrade already purchased!", Color.BLACK, 155, 20);
                 showPopUp(upgradeFailedLabel, panel, labels);
             }
         };
@@ -270,6 +277,7 @@ public class CookieClicker {
 
             if (time.getTime() <= 0 && !miniGameStarted) {
                 game.startGame();
+                cursorMilkUpgradable = true;
                 miniGameStarted = true;
                 frame.remove(panel);
                 frame.add(game);
