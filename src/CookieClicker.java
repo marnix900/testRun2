@@ -25,7 +25,7 @@ public class CookieClicker {
     private static boolean startClicked = false;
     private static boolean miniGameStarted = false;
     public static boolean miniGameFinished = false;
-    private static final int MINI_GAME_TIME = 120;
+    private static final int MINI_GAME_TIME = 2;
     public static int milkCount = 0;
     private static boolean cursorMilkUpgradable = false;
     private static boolean cursorMilkUpgraded = false;
