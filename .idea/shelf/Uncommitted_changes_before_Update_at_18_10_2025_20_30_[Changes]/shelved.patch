@@ -1,0 +1,365 @@
+Index: src/testClass.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.awt.event.*;\r\nimport java.awt.*;\r\nimport javax.swing.*;\r\n\r\npublic class testClass {\r\n    /**\r\n     * Create the GUI and show it.  For thread safety,\r\n     * this method should be invoked from the\r\n     * event-dispatching thread.\r\n     */\r\n\r\n    private Cookie cookie;\r\n\r\n    public testClass(Cookie cookie) {\r\n        this.cookie = cookie;\r\n    }\r\n\r\n    private static void createAndShowGUI() {\r\n        //Create and set up the window.\r\n        JFrame frame = new JFrame(\"HelloWorldSwing\");\r\n        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);\r\n\r\n        //Add the ubiquitous \"Hello World\" label.\r\n        JLabel label = new JLabel(\"Hello World\");\r\n        frame.getContentPane().add(label);\r\n\r\n        //Display the window.\r\n        frame.pack();\r\n        frame.setVisible(true);\r\n        frame.setSize(500,400);\r\n        frame.setLocation(2000, 500);\r\n\r\n        JPanel panel = new JPanel();\r\n        panel.setBorder(BorderFactory.createLineBorder(Color.black));\r\n        panel.setBackground(Color.red);\r\n\r\n        frame.add(panel);\r\n\r\n        JButton button = new JButton(\"Cookie\");\r\n        panel.add(button);\r\n        button.setBorder(BorderFactory.createLineBorder(Color.black));\r\n        button.setBackground(Color.blue);\r\n\r\n        Cookie c = new Cookie(0);\r\n        button.addMouseListener(c.addCookie(c.getCookie()));\r\n        label.setText(\"Cookie count: \" + c.getCookie());\r\n    }\r\n\r\n    /*\r\n    public static void createWindow() {\r\n        JWindow window = new JWindow();\r\n        window.setSize(100,100);\r\n        window.setLocation(100, 100);\r\n        window.setVisible(true);\r\n    }\r\n    */\r\n\r\n    public static void main(String[] args) {\r\n        //Schedule a job for the event-dispatching thread:\r\n        //creating and showing this application's GUI.\r\n        javax.swing.SwingUtilities.invokeLater(new Runnable() {\r\n            public void run() {\r\n                Cookie c = new Cookie(0);\r\n                testClass testClass = new testClass(c);\r\n                createAndShowGUI();\r\n                //createWindow();\r\n            }\r\n        });\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/testClass.java b/src/testClass.java
+--- a/src/testClass.java	(revision 51a0e1bb5db5370bbba2f0232d9ac5bdc048ccc7)
++++ b/src/testClass.java	(date 1760472515701)
+@@ -3,68 +3,98 @@
+ import javax.swing.*;
+ 
+ public class testClass {
+-    /**
+-     * Create the GUI and show it.  For thread safety,
+-     * this method should be invoked from the
+-     * event-dispatching thread.
+-     */
+ 
+-    private Cookie cookie;
++    private CookieCounter cookie;
+ 
+-    public testClass(Cookie cookie) {
++    public testClass(CookieCounter cookie) {
+         this.cookie = cookie;
+     }
+ 
++    public Point point() {
++        int x = (int)(Math.random()*101);
++        int y = (int)(Math.random()*101);
++        System.out.println(x + ' ' + y);
++        return new Point(100, 100);
++    }
++
+     private static void createAndShowGUI() {
+         //Create and set up the window.
+-        JFrame frame = new JFrame("HelloWorldSwing");
++        JFrame frame = new JFrame("Cookie Clicker");
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+-
+-        //Add the ubiquitous "Hello World" label.
+-        JLabel label = new JLabel("Hello World");
+-        frame.getContentPane().add(label);
+-
+-        //Display the window.
+-        frame.pack();
+-        frame.setVisible(true);
+-        frame.setSize(500,400);
++        frame.setSize(1062, 706);
+         frame.setLocation(2000, 500);
+ 
+-        JPanel panel = new JPanel();
+-        panel.setBorder(BorderFactory.createLineBorder(Color.black));
+-        panel.setBackground(Color.red);
++        JLabel label = new JLabel("Cookie Clicker");
++        frame.getContentPane().add(label, BorderLayout.NORTH);
++
++        ImagePanel panel = new ImagePanel("/images/blueSkyBackground.jpeg", Color.BLACK, 662, 706);
++        frame.add(panel, BorderLayout.WEST);
+ 
+-        frame.add(panel);
++        ImagePanel storePanel = new ImagePanel("/images/wood.jpg", Color.BLACK, 400, 706);
++        frame.add(storePanel, BorderLayout.EAST);
++        Upgrade cursorUpgrade = new Upgrade("/images/CursorUpgrade.png");
++        cursorUpgrade.setLocation(100, 100);
++        storePanel.add(cursorUpgrade);
+ 
+-        JButton button = new JButton("Cookie");
+-        panel.add(button);
+-        button.setBorder(BorderFactory.createLineBorder(Color.black));
+-        button.setBackground(Color.blue);
++        CookieCounter counter = new CookieCounter(0);
+ 
+-        Cookie c = new Cookie(0);
+-        button.addMouseListener(c.addCookie(c.getCookie()));
+-        label.setText("Cookie count: " + c.getCookie());
+-    }
++        // Create multiple cookies
++        Cookie cookie1 = new Cookie("/images/cookie.png", "Cookie1");
++        cookie1.setLocation(cookie1.random(), cookie1.random());
++
++        Cookie cookie2 = new Cookie("/images/cookie.png", "Cookie2");
++        cookie2.setLocation(cookie2.random(), cookie2.random());
++
++        Cookie cookie3 = new Cookie("/images/cookie.png", "Cookie3");
++        cookie3.setLocation(cookie3.random(), cookie3.random());
++
++        panel.add(cookie1);
++        panel.add(cookie2);
++        panel.add(cookie3);
++
++        ActionListener upgradeListener = e -> {
++            Upgrade upgradeClicked = (Upgrade) e.getSource();
++            if ((counter.getCookie() >= 10) && (!cursorUpgrade.getUpgraded())) {
++                counter.setCookie(counter.getCookie() - 10);
++                counter.setIncrement(counter.getIncrement()*2);
++                label.setText("Cookie count: " + counter.getCookie());
++                System.out.println("Upgrade purchased!");
++                cursorUpgrade.setUpgraded(true);
++            } if (cursorUpgrade.getUpgraded()) {
++                System.out.println("Upgrade already purchased!");
++            } else {
++                System.out.println("Upgrade failed!");
++            }
++        };
+ 
+-    /*
+-    public static void createWindow() {
+-        JWindow window = new JWindow();
+-        window.setSize(100,100);
+-        window.setLocation(100, 100);
+-        window.setVisible(true);
+-    }
+-    */
++        cursorUpgrade.addActionListener(upgradeListener);
++
++        // Shared listener logic
++        ActionListener clickAction = e -> {
++            Cookie clicked = (Cookie) e.getSource();
++            panel.remove(clicked);
++            panel.revalidate();
++            panel.repaint();
++            counter.addCookie();
++            label.setText("Cookie count: " + counter.getCookie());
++            panel.add(clicked);
++            clicked.setLocation(clicked.random(), clicked.random());
++        };
++
++        // Add listeners
++        for (Cookie cookie : new Cookie[]{cookie1, cookie2, cookie3}) {
++            cookie.addActionListener(clickAction);
++            cookie.addMouseListener(new MouseAdapter() {
++                @Override
++                public void mousePressed(MouseEvent e) {
++                    cookie.shrink();
++                }
++            });
++        }
+ 
++        frame.setVisible(true);
++    }
+     public static void main(String[] args) {
+-        //Schedule a job for the event-dispatching thread:
+-        //creating and showing this application's GUI.
+-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+-            public void run() {
+-                Cookie c = new Cookie(0);
+-                testClass testClass = new testClass(c);
+-                createAndShowGUI();
+-                //createWindow();
+-            }
+-        });
++        SwingUtilities.invokeLater(() -> createAndShowGUI());
+     }
+ }
+\ No newline at end of file
+Index: src/Cookie.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.awt.event.ActionListener;\r\nimport java.awt.event.MouseListener;\r\n\r\npublic class Cookie {\r\n    int cookie;\r\n    Cookie(int cookie) {\r\n        this.cookie = cookie;\r\n    }\r\n\r\n    public int getCookie() {\r\n        return this.cookie;\r\n    }\r\n    public MouseListener addCookie(int cookie) {\r\n        this.cookie = cookie+1;\r\n        return null;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Cookie.java b/src/Cookie.java
+--- a/src/Cookie.java	(revision 51a0e1bb5db5370bbba2f0232d9ac5bdc048ccc7)
++++ b/src/Cookie.java	(date 1760450498951)
+@@ -1,17 +1,35 @@
+-import java.awt.event.ActionListener;
+-import java.awt.event.MouseListener;
++import javax.swing.*;
++import java.awt.*;
++
++public class Cookie extends JButton {
++    private String name;
++    private Image scaledImage;
++
++
++    public Cookie(String imagePath, String name) {
++        this.name = name;
++
++        ImageIcon cookieIcon = new ImageIcon(getClass().getResource(imagePath));
++        scaledImage = cookieIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
++
++        setIcon(new ImageIcon(scaledImage));
++        setContentAreaFilled(false);
++        setBorderPainted(false);
++        setFocusPainted(false);
++        setOpaque(false);
++
++        setSize(150, 150); // size for absolute layout
++    }
+ 
+-public class Cookie {
+-    int cookie;
+-    Cookie(int cookie) {
+-        this.cookie = cookie;
++    public void shrink() {
++        setIcon(new ImageIcon(scaledImage.getScaledInstance(140, 140, Image.SCALE_SMOOTH)));
+     }
+ 
+-    public int getCookie() {
+-        return this.cookie;
++    public void grow() {
++        setIcon(new ImageIcon(scaledImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH)));
+     }
+-    public MouseListener addCookie(int cookie) {
+-        this.cookie = cookie+1;
+-        return null;
++
++    public int random() {
++        return (int)(Math.random()*501);
+     }
+ }
+Index: src/ImagePanel.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/ImagePanel.java b/src/ImagePanel.java
+new file mode 100644
+--- /dev/null	(date 1760451681856)
++++ b/src/ImagePanel.java	(date 1760451681856)
+@@ -0,0 +1,38 @@
++import javax.swing.*;
++import java.awt.*;
++
++/**
++ * A custom JPanel that draws a background image
++ * and has a colored border.
++ */
++public class ImagePanel extends JPanel {
++    private Image backgroundImage;
++    private Color borderColor;
++
++    // Constructor
++    public ImagePanel(String imagePath, Color borderColor, int width, int height) {
++        this.borderColor = borderColor;
++
++        // Try to load image
++        ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
++        backgroundImage = icon.getImage();
++
++        // Optional: set panel size or layout
++        setPreferredSize(new Dimension(width, height));
++        setLayout(null); // for absolute positioning of the cookies
++    }
++
++    @Override
++    protected void paintComponent(Graphics g) {
++        super.paintComponent(g); // important for proper repainting
++
++        // Draw the background image scaled to panel size
++        if (backgroundImage != null) {
++            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
++        }
++
++        // Draw the borderline with custom color
++        g.setColor(borderColor);
++        g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
++    }
++}
+Index: testRun2.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"JAVA_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\" inherit-compiler-output=\"true\">\r\n    <exclude-output />\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <sourceFolder url=\"file://$MODULE_DIR$/src\" isTestSource=\"false\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/testRun2.iml b/testRun2.iml
+--- a/testRun2.iml	(revision 51a0e1bb5db5370bbba2f0232d9ac5bdc048ccc7)
++++ b/testRun2.iml	(date 1760296179487)
+@@ -3,6 +3,7 @@
+   <component name="NewModuleRootManager" inherit-compiler-output="true">
+     <exclude-output />
+     <content url="file://$MODULE_DIR$">
++      <sourceFolder url="file://$MODULE_DIR$/resources" type="java-resource" />
+       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+     </content>
+     <orderEntry type="inheritedJdk" />
+Index: src/CookieCounter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/CookieCounter.java b/src/CookieCounter.java
+new file mode 100644
+--- /dev/null	(date 1760472094670)
++++ b/src/CookieCounter.java	(date 1760472094670)
+@@ -0,0 +1,28 @@
++
++public class CookieCounter {
++    private int cookie;
++    private int increment = 1;
++    CookieCounter(int cookie) {
++        this.cookie = cookie;
++    }
++
++    public int getCookie() {
++        return this.cookie;
++    }
++
++    public void setCookie(int cookie) {
++        this.cookie = cookie;
++    }
++
++    public int getIncrement() {
++        return this.increment;
++    }
++
++    public void setIncrement(int increment) {
++        this.increment = increment;
++    }
++
++    public void addCookie() {
++        this.cookie = this.cookie + increment;
++    }
++}
+Index: src/Upgrade.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Upgrade.java b/src/Upgrade.java
+new file mode 100644
+--- /dev/null	(date 1760472426368)
++++ b/src/Upgrade.java	(date 1760472426368)
+@@ -0,0 +1,37 @@
++import javax.swing.*;
++import java.awt.*;
++
++public class Upgrade extends JButton {
++    private Image scaledImage;
++    private Boolean upgraded = false;
++
++    public Upgrade(String imagePath) {
++
++        ImageIcon upgradeIcon = new ImageIcon(getClass().getResource(imagePath));
++        scaledImage = upgradeIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
++
++        setIcon(new ImageIcon(scaledImage));
++        setContentAreaFilled(false);
++        setBorderPainted(false);
++        setFocusPainted(false);
++        setOpaque(false);
++
++        setSize(150, 150); // size for absolute layout
++    }
++
++    public void shrink() {
++        setIcon(new ImageIcon(scaledImage.getScaledInstance(140, 140, Image.SCALE_SMOOTH)));
++    }
++
++    public void grow() {
++        setIcon(new ImageIcon(scaledImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH)));
++    }
++
++    public Boolean getUpgraded() {
++        return upgraded;
++    }
++
++    public void setUpgraded(Boolean upgraded) {
++        this.upgraded = upgraded;
++    }
++}

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="99dfdcfb-91ca-4f31-980d-810746074ae1" name="Changes" comment="Merging miniGame with Master branch">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="MiniGame" />
+  </component>
+  <component name="Git.Rebase.Settings">
+    <option name="NEW_BASE" value="MiniGame" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="SOFT" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;marnix900&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/marnix900/testRun2.git&quot;,
+    &quot;accountId&quot;: &quot;4220b475-65cf-4760-b7d1-fb16b4db9ce8&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="33byvXLpxmiCCvmHZnSeTImXPaQ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.CookieClicker.executor": "Run",
+    "Application.MilkCatcherGame.executor": "Run",
+    "Application.solveit.executor": "Run",
+    "Application.testClass.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "final",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/marni/OneDrive/Documents/ProgrammingTUe/TestRunIntellij/testRun2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="99dfdcfb-91ca-4f31-980d-810746074ae1" name="Changes" comment="" />
+      <created>1759600301195</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1759600301195</updated>
+      <workItem from="1759600302160" duration="4864000" />
+      <workItem from="1760291831718" duration="4687000" />
+      <workItem from="1760440490263" duration="8460000" />
+      <workItem from="1760470344351" duration="2757000" />
+      <workItem from="1760811963138" duration="348000" />
+      <workItem from="1760812333877" duration="7448000" />
+      <workItem from="1760972973994" duration="1630000" />
+      <workItem from="1760980311458" duration="78000" />
+      <workItem from="1760980407547" duration="4040000" />
+      <workItem from="1761049296331" duration="4021000" />
+      <workItem from="1761068497351" duration="6169000" />
+      <workItem from="1761125569766" duration="8363000" />
+      <workItem from="1761300040494" duration="4901000" />
+      <workItem from="1761312802897" duration="795000" />
+      <workItem from="1761393654737" duration="2339000" />
+      <workItem from="1761396284311" duration="20385000" />
+      <workItem from="1761502835656" duration="4855000" />
+      <workItem from="1761515345326" duration="960000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial commit for this project">
+      <option name="closed" value="true" />
+      <created>1759600498483</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759600498483</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added frame and first panel together with the cookie class.">
+      <option name="closed" value="true" />
+      <created>1759611974854</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759611974854</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added frame and first panel together with the cookie class.">
+      <option name="closed" value="true" />
+      <created>1759611981968</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759611981968</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Not really optimized but added decent spawn generation and adjustments to label">
+      <option name="closed" value="true" />
+      <created>1760820462523</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760820462523</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Countdown for minigame added">
+      <option name="closed" value="true" />
+      <created>1761068771840</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1761068771840</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Working on PopUp for upgrades. New upgraded added; factory">
+      <option name="closed" value="true" />
+      <created>1761075450731</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1761075450731</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Small adjustments to positioning and add popup to all upgrades">
+      <option name="closed" value="true" />
+      <created>1761396052240</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1761396052240</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Small adjustments to positioning and add popup to all upgrades">
+      <option name="closed" value="true" />
+      <created>1761396092547</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1761396092547</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Name adjustment">
+      <option name="closed" value="true" />
+      <created>1761396231416</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1761396231416</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Name adjustment">
+      <option name="closed" value="true" />
+      <created>1761396408753</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1761396408753</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Problem with uploading files">
+      <option name="closed" value="true" />
+      <created>1761396571604</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1761396571604</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Problem with uploading files">
+      <option name="closed" value="true" />
+      <created>1761396845580</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1761396845580</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Problem with uploading files">
+      <option name="closed" value="true" />
+      <created>1761397108428</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1761397108428</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Mini game completely intergrated">
+      <option name="closed" value="true" />
+      <created>1761416566635</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1761416566635</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Additions regarding milk upgrades">
+      <option name="closed" value="true" />
+      <created>1761423083834</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1761423083834</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Milk upgrades finanlised">
+      <option name="closed" value="true" />
+      <created>1761424697315</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1761424697315</updated>
+    </task>
+    <task id="LOCAL-00017" summary="first runs tutorial again">
+      <option name="closed" value="true" />
+      <created>1761425064533</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1761425064533</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Final adjustments for labels and comments">
+      <option name="closed" value="true" />
+      <created>1761505148725</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1761505148725</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Merging miniGame with Master branch">
+      <option name="closed" value="true" />
+      <created>1761507596048</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1761507596048</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/master" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="master" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial commit for this project" />
+    <MESSAGE value="Added frame and first panel together with the cookie class." />
+    <MESSAGE value="Not really optimized but added decent spawn generation and adjustments to label" />
+    <MESSAGE value="Countdown for minigame added" />
+    <MESSAGE value="Working on PopUp for upgrades. New upgraded added; factory" />
+    <MESSAGE value="Small adjustments to positioning and add popup to all upgrades" />
+    <MESSAGE value="Name adjustment" />
+    <MESSAGE value="Problem with uploading files" />
+    <MESSAGE value="Mini game completely intergrated" />
+    <MESSAGE value="Additions regarding milk upgrades" />
+    <MESSAGE value="Milk upgrades finanlised" />
+    <MESSAGE value="first runs tutorial again" />
+    <MESSAGE value="Final adjustments for labels and comments" />
+    <MESSAGE value="Merging miniGame with Master branch" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merging miniGame with Master branch" />
+  </component>
+</project>
