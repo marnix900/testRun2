@@ -35,7 +35,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
     private long doublePointsEndTime = 0;
 
     private String[] funMessages = {
-            "Yum!", "Delicious!", "Nice catch!", "Milk + Cookie = ❤️", "Cheese?! Wait, no..."
+        "Yum!", "Delicious!", "Nice catch!", "Milk + Cookie = ❤️", "Cheese?! Wait, no..."
     };
 
     private String hitMessage = ""; // message when hitting obstacle
@@ -47,10 +47,10 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
         addKeyListener(this);
 
         try {
-            cookieImg = ImageIO.read(getClass().getResource("/images/cookie.png"));
-            milkImg = ImageIO.read(getClass().getResource("/images/milk.png"));
-            backgroundImg = ImageIO.read(getClass().getResource("/images/background.png"));
-            obstacleImg = ImageIO.read(getClass().getResource("/images/obstacle.png")); // load obstacle image
+            cookieImg = ImageIO.read(new File("cookie.png"));
+            milkImg = ImageIO.read(new File("milk.png"));
+            backgroundImg = ImageIO.read(new File("background.png"));
+            obstacleImg = ImageIO.read(new File("obstacle.png")); // load obstacle image
 
             cookieImg = resize(cookieImg, 80, 50);
             milkImg = resize(milkImg, 25, 25);
@@ -65,7 +65,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
         startGame();
     }
 
-    public void startGame() {
+    private void startGame() {
         score = 0;
         cookieX = WIDTH / 2 - 40;
         milkDrops.clear();
@@ -126,7 +126,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
 
                 if (rand.nextInt(10) == 0) {
                     doublePoints = true;
-                    doublePointsEndTime = System.currentTimeMillis() + 5000;
+                    doublePointsEndTime = System.currentTimeMillis() + 5000; // 5 seconds
                 }
             } else if (p.y > HEIGHT) {
                 milkIt.remove();
@@ -148,7 +148,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
 
                 // Show hit message
                 hitMessage = "Ouch! -5 points!";
-                messageEndTime = System.currentTimeMillis() + 1500;
+                messageEndTime = System.currentTimeMillis() + 1500; // 1.5 seconds
             } else if (o.y > HEIGHT) {
                 obsIt.remove();
             }
@@ -209,7 +209,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
         g.setFont(new Font("Arial", Font.PLAIN, 16));
         g.drawString("Use ← → to move", WIDTH - 200, 30);
         g.drawString("Press SPACE to restart", WIDTH - 220, 55);
-
+        
         if (!hitMessage.isEmpty() && System.currentTimeMillis() < messageEndTime) {
             g.setFont(new Font("Arial", Font.BOLD, 25));
             g.setColor(Color.RED);
@@ -227,8 +227,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
             g.drawString("Time’s up!", WIDTH / 2 - 100, HEIGHT / 2 - 10);
             g.setFont(new Font("Arial", Font.PLAIN, 25));
             g.drawString("Final Score: " + score, WIDTH / 2 - 90, HEIGHT / 2 + 30);
-            g.drawString("Press SPACE to continue...", WIDTH / 2 - 130, HEIGHT / 2 + 60);
-            CookieClicker.milkCount = score;
+            g.drawString("Press SPACE to restart", WIDTH / 2 - 130, HEIGHT / 2 + 60);
         }
     }
 
@@ -238,11 +237,21 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
             if (key == KeyEvent.VK_LEFT && cookieX > 0) cookieX -= 20;
             if (key == KeyEvent.VK_RIGHT && cookieX < WIDTH - cookieImg.getWidth()) cookieX += 20;
         }
-        if (key == KeyEvent.VK_SPACE && gameOver) CookieClicker.miniGameFinished = true;
+        if (key == KeyEvent.VK_SPACE && gameOver) startGame();
     }
 
     public void keyReleased(KeyEvent e) {}
     public void keyTyped(KeyEvent e) {}
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Cookie Catcher 🍪🥛");
+        MilkCatcherGame game = new MilkCatcherGame();
+        frame.add(game);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        frame.setResizable(false);
+    }
 
     class Particle {
         int x, y, size, dx, dy;
