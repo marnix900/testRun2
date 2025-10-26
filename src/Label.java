@@ -1,16 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
 
-// Custom label with rounded corners and transparency
 class Label extends JLabel {
     private Color backgroundColor;
-    private int cornerRadius;
+    private int cornerRadius = 0; // not neccesary after all
     private int transparency;
 
-    public Label(String text, Color bgColor, int transparency, int cornerRadius) {
+    public Label(String text, Color bgColor, int transparency) {
         super(text, SwingConstants.CENTER);
         this.backgroundColor = bgColor;
-        setOpaque(false); // important for transparency
+        setOpaque(false); //transparency
         setForeground(Color.WHITE);
         setFont(new Font("Arial", Font.BOLD, 18));
         this.transparency = transparency;

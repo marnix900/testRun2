@@ -4,8 +4,8 @@ import java.awt.*;
 public class Factory extends JButton {
     private Image scaledImage;
     private int upgradeCount;
-    private int factoryCPS = 20;
-    private int cost = 20;
+    private int factoryCPS = 100;
+    private int cost = 1000;
     private int costMultiplier = 2;
 
     public Factory(String imagePath) {
@@ -18,7 +18,7 @@ public class Factory extends JButton {
         setFocusPainted(false);
         setOpaque(false);
 
-        setSize(150, 150); // size for absolute layout
+        setSize(150, 150);
     }
 
     public void setUpgradeCount(int upgradeCount) {
@@ -27,10 +27,6 @@ public class Factory extends JButton {
 
     public int getUpgradeCount() {
         return this.upgradeCount;
-    }
-
-    public void setFactoryCPS(int factoryCPS) {
-        this.factoryCPS = factoryCPS;
     }
 
     public int getFactoryCPS() {

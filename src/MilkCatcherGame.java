@@ -126,7 +126,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
 
                 if (rand.nextInt(10) == 0) {
                     doublePoints = true;
-                    doublePointsEndTime = System.currentTimeMillis() + 5000; // 5 seconds
+                    doublePointsEndTime = System.currentTimeMillis() + 5000;
                 }
             } else if (p.y > HEIGHT) {
                 milkIt.remove();
@@ -148,7 +148,7 @@ public class MilkCatcherGame extends JPanel implements ActionListener, KeyListen
 
                 // Show hit message
                 hitMessage = "Ouch! -5 points!";
-                messageEndTime = System.currentTimeMillis() + 1500; // 1.5 seconds
+                messageEndTime = System.currentTimeMillis() + 1500;
             } else if (o.y > HEIGHT) {
                 obsIt.remove();
             }

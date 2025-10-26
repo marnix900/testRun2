@@ -20,15 +20,7 @@ public class Cookie extends JButton {
         setFocusPainted(false);
         setOpaque(false);
 
-        setSize(150, 150); // size for absolute layout
-    }
-
-    public void shrink() {
-        setIcon(new ImageIcon(scaledImage.getScaledInstance(140, 140, Image.SCALE_SMOOTH)));
-    }
-
-    public void grow() {
-        setIcon(new ImageIcon(scaledImage.getScaledInstance(150, 150, Image.SCALE_SMOOTH)));
+        setSize(150, 150);
     }
 
     public int random(ArrayList<Integer> spawningPoint) {

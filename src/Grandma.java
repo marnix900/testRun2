@@ -4,8 +4,8 @@ import java.awt.*;
 public class Grandma extends JButton {
     private Image scaledImage;
     private int upgradeCount;
-    private int factoryCPS = 1;
-    private int cost = 20;
+    private int grandmaCPS = 1;
+    private int cost = 10;
     private int costMultiplier = 2;
 
     public Grandma(String imagePath) {
@@ -18,7 +18,7 @@ public class Grandma extends JButton {
         setFocusPainted(false);
         setOpaque(false);
 
-        setSize(150, 150); // size for absolute layout
+        setSize(150, 150);
     }
 
     public void setUpgradeCount(int upgradeCount) {
@@ -29,12 +29,8 @@ public class Grandma extends JButton {
         return this.upgradeCount;
     }
 
-    public void setGrandmaCPS(int factoryCPS) {
-        this.factoryCPS = factoryCPS;
-    }
-
     public int getGrandmaCPS() {
-        return this.factoryCPS;
+        return this.grandmaCPS;
     }
 
     public void setCost(int cost) {

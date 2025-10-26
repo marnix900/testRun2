@@ -4,8 +4,8 @@ import java.awt.*;
 public class Upgrade extends JButton {
     private Image scaledImage;
     private Boolean upgraded = false;
-    private int cost = 1;
-    private int milkCost = 0;
+    private int cost = 100;
+    private int milkCost = 20;
 
     public Upgrade(String imagePath) {
 
@@ -18,7 +18,7 @@ public class Upgrade extends JButton {
         setFocusPainted(false);
         setOpaque(false);
 
-        setSize(150, 150); // size for absolute layout
+        setSize(150, 150);
     }
 
     public Boolean getUpgraded() {

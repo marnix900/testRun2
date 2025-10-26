@@ -9,25 +9,21 @@ public class ImagePanel extends JPanel {
     public ImagePanel(String imagePath, Color borderColor, int width, int height) {
         this.borderColor = borderColor;
 
-        // Try to load image
         ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
         backgroundImage = icon.getImage();
 
-        // Optional: set panel size or layout
         setPreferredSize(new Dimension(width, height));
-        setLayout(null); // for absolute positioning of the cookies
+        setLayout(null);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // important for proper repainting
+        super.paintComponent(g);
 
-        // Draw the background image scaled to panel size
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
 
-        // Draw the borderline with custom color
         g.setColor(borderColor);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
